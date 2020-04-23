@@ -5,3 +5,5 @@ Adobe After Effects JSON Animation example with Lottie Web - https://github.com/
 ```
 python -m SimpleHTTPServer 9090
 ```
+
+and then go to [http://localhost:9090](http://localhost:9090)
