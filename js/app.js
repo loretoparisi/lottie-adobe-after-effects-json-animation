@@ -229,49 +229,60 @@ const Palette = {
  * @copyright 2020 Loreto Parisi (loretoparisi at gmail dot com)
 */
 const Animation = {
-    Update: function (anim, params) {
+    GetAnimationIndex: function() { return 0 },
+    GetData: function() {
+        return [
+            'data/text.json',
+            'data/marble.json',
+            'data/loading.json',
+            'data/bouncing.json'
+        ]
+    },
+    Update: function(anim, params) {
+        var self = this;
         var options = {
             delay: 500
         }
-        for(var attr in params) { options[attr] = params[attr] };
-        /**
-            
-            arg[0] - an object with the document data
-            arg[1] - index of the text keyframe. 
-            If the text source is not keyframed, you can skip this argument. 
-            If not skipped and the source text is keyframed, it will update the current source.
-            
-            t: text value
-            s: font size
-            fc: fill color - array with RGB values ranging from 0 to 1
-            lh: font line height
-            sc: stroke color - array with RGB values ranging from 0 to 1
-            j: justify
+        for (var attr in params) { options[attr] = params[attr] };
 
-        */
-        anim.renderer.elements[0].updateDocumentData({
-            t: 'This is keyframe 0', 
-            s: 78, 
-            fc: Palette.color() 
-        }, 0);
-        anim.renderer.elements[0].updateDocumentData({
-            t: 'This is keyframe 1', 
-            s: 78, 
-            fc: Palette.color() 
-        }, 1);
-        
+        switch (self.GetAnimationIndex()) {
+            // simple TextLayer
+            case 0: {
+                anim.renderer.elements[0].updateDocumentData({
+                    t: "White shirt now red, my bloody nose", 
+                    s: 78, 
+                    fc: Palette.color() 
+                }, 0);
+                anim.renderer.elements[0].updateDocumentData({
+                    t: "Sleepin', you're on your tippy toes", 
+                    s: 78, 
+                    fc: Palette.color() 
+                }, 1);
+            } break;
+            default: break;
+        }
+
+        // play animation
+        console.log("lottie: play delayed");
         setTimeout(() => anim.play(), options.delay);
 
     },//Update
-    Create: function (params) {
+    Create: function(params) {
+        var self = this;
         var options = {
             autoplay: false,
             loop: true
         }
-        for(var attr in params) { options[attr] = params[attr] };
+        for (var attr in params) { options[attr] = params[attr] };
+
         return new Promise((resolve, reject) => {
-            $.getJSON('data/data.json', (animationData) => {
-                console.log("lotties: animationData", animationData);
+            $.getJSON(self.GetData()[self.GetAnimationIndex()], (animationData) => {
+
+                console.log("lottie: animationData\n", animationData);
+
+                console.log("layers", animationData.layers);
+                console.log("chars", animationData.chars);
+
                 const elem = document.getElementById('lottie');
                 const animData = {
                     container: elem,
@@ -280,23 +291,25 @@ const Animation = {
                     autoplay: options.autoplay,
                     // https://github.com/airbnb/lottie-web/wiki/Renderer-Settings
                     rendererSettings: {
+                        // for svg and canvas renderer it simulates the behavior of the preserveAspectRatio property on svgs.
+                        preserveAspectRatio: 'xMidYMid meet',
+                        // if set to false, canvas will not be erased between frames. Useful when the canvas context is shared with the rest of the application
                         clearCanvas: false,
                         progressiveLoad: false, // Boolean, only svg renderer, loads dom elements when needed. Might speed up initialization for large number of elements.
                         hideOnTransparent: true //Boolean, only svg renderer, hides elements when opacity reaches 0 (defaults to true)
                     },
-                    //animationData: animationData,
-                    path: 'data/data.json'
+                    animationData: animationData
                 };
                 // https://github.com/airbnb/lottie-web/wiki/loadAnimation-options
                 let anim = lottie.loadAnimation(animData);
-                console.log("lotties: loadAnimation", anim);
+                console.log("lottie: loadAnimation", anim);
                 // DOMLoaded (when elements have been added to the DOM)
                 anim.addEventListener('DOMLoaded', () => {
-                    console.log("lotties: DOMLoaded");
+                    console.log("lottie: DOMLoaded");
                     resolve(anim);
                 });
                 anim.addEventListener('complete', () => {
-                    console.log("lotties: complete");
+                    console.log("lottie: complete");
                 });
             })
         });
@@ -304,6 +317,7 @@ const Animation = {
 }//Animation
 
 $(document).ready(function () {
+    console.log(Animation)
     // create the animation from json api
     Animation.Create({ autoplay: false, loop: true })
         .then(anim => {

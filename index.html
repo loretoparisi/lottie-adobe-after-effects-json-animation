@@ -16,6 +16,10 @@
 </head>
 <body>
     <div id="lottie"></div>
-    <script src="js/app.js"></script>
+    <script>
+        var script = document.createElement('script');
+        script.src = "js/app.js?v="+Math.random();
+        document.getElementsByTagName('head')[0].appendChild(script);
+    </script>
 </body>
 </html>
