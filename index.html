@@ -17,6 +17,7 @@
 <body>
     <div id="lottie"></div>
     <script>
+        // LP: little hacky but it works against browser caching :P
         var script = document.createElement('script');
         script.src = "js/app.js?v="+Math.random();
         document.getElementsByTagName('head')[0].appendChild(script);

@@ -233,9 +233,7 @@ const Animation = {
     GetData: function() {
         return [
             'data/text.json',
-            'data/marble.json',
-            'data/loading.json',
-            'data/bouncing.json'
+            'data/text-slide-in-from-right.json'
         ]
     },
     Update: function(anim, params) {
@@ -248,17 +246,27 @@ const Animation = {
         switch (self.GetAnimationIndex()) {
             // simple TextLayer
             case 0: {
+                // LP: key frame 1
                 anim.renderer.elements[0].updateDocumentData({
                     t: "White shirt now red, my bloody nose", 
                     s: 78, 
                     fc: Palette.color() 
                 }, 0);
+                // LP: key frame 2
                 anim.renderer.elements[0].updateDocumentData({
                     t: "Sleepin', you're on your tippy toes", 
                     s: 78, 
                     fc: Palette.color() 
                 }, 1);
             } break;
+            case 1: {
+                // LP: change text here!
+                anim.renderer.elements[0].updateDocumentData({
+                    t: "White shirt now red, my bloody nose", 
+                    s: 78, 
+                    fc: Palette.color() 
+                }, 0);
+            }
             default: break;
         }
 
